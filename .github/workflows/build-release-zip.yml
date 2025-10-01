@@ -2,10 +2,10 @@ name: Build release zip
 
 on:
   push:
-    # tags: # This is what we want in the future
-    # - '*'
-    branches: # This is for testing and run it on every push to main
-    - main
+    tags: # This is what we want in the future
+    - '*'
+    # branches: # This is for testing and run it on every push to main
+    # - main
 
 permissions:
   contents: write  # needed to create releases and upload assets
@@ -38,6 +38,14 @@ jobs:
       with:
         type: 'zip'
         filename: 'a-test-plugin.zip' # Name of the archive file
-        exclusions: '/.github /node_modules .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
+        exclusions: '/.git /.github /node_modules .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
     
     # Create release and upload the zip file as an asset
+    - name: Publish Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        draft: true
+        prerelease: false
+        files: a-test-plugin.zip
