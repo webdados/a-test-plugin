@@ -4,6 +4,7 @@ on:
   push:
     tags: # This is what we want in the future
     - '*'
+  workflow_dispatch:  # This enables manual triggering
     # branches: # This is for testing and run it on every push to main
     # - main
 
