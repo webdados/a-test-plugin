@@ -1,0 +1,6 @@
+/.github
+/node_modules
+.distignore
+.gitignore
+.phpcs.xml.dist
+README.md
