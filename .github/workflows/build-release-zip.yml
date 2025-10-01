@@ -40,7 +40,7 @@ jobs:
         filename: 'a-test-plugin.zip' # Name of the archive file
         exclusions: '*.git* *.github* /*node_modules* .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
     
-    # Create release and upload the zip file as an asset
+    # Create release and upload the zip file as an asset using https://github.com/marketplace/actions/gh-release
     - name: Publish Release
       uses: softprops/action-gh-release@v2.3.3
       with:
