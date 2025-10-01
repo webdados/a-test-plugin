@@ -4,15 +4,15 @@ on:
   push:
     tags:
     - '*'
-    branches:
-    - main
+    # branches:
+    # - main
 
 jobs:
   build:
     name: Build release zip
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout # This is trying to checkout from .org, which is not what we want for private repos
       uses: actions/checkout@v4
 
     #- name: Build plugin # Remove or modify this step as needed
