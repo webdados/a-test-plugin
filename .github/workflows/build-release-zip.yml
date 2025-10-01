@@ -2,17 +2,22 @@ name: Build release zip
 
 on:
   push:
-    tags:
-    - '*'
-    # branches:
-    # - main
+    # tags: # This is what we want in the future
+    # - '*'
+    branches: # This is for testing and run it on every push to main
+    - main
+
+permissions:
+  contents: write  # needed to create releases and upload assets
 
 jobs:
   build:
     name: Build release zip
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout # This is trying to checkout from .org, which is not what we want for private repos
+    
+    # Checkout the code from the repository
+    - name: Checkout
       uses: actions/checkout@v4
 
     #- name: Build plugin # Remove or modify this step as needed
@@ -21,7 +26,18 @@ jobs:
     #    npm install
     #    npm run build
 
-    - name: Generate zip
-      uses: 10up/action-wordpress-plugin-build-zip@stable
-      env:
-        SLUG: a-test-plugin # optional, remove if GitHub repo name matches SVN slug, including capitalization
+    # This only works for WordPress.org hosted plugins
+    #- name: Generate zip
+    #  uses: 10up/action-wordpress-plugin-build-zip@stable
+    #  env:
+    #    SLUG: a-test-plugin # optional, remove if GitHub repo name matches SVN slug, including capitalization
+
+    # Create the zip file using https://github.com/marketplace/actions/zip-release
+    - name: Zip Release
+      uses: TheDoctor0/zip-release@0.7.6
+      with:
+        type: 'zip'
+        filename: 'a-test-plugin.zip' # Name of the archive file
+        exclusions: '/.github /node_modules .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
+    
+    # Create release and upload the zip file as an asset
