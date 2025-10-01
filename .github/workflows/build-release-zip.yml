@@ -38,7 +38,7 @@ jobs:
       with:
         type: 'zip'
         filename: 'a-test-plugin.zip' # Name of the archive file
-        exclusions: '/.git /.github /node_modules .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
+        exclusions: '*.git* *.github* /*node_modules* .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
     
     # Create release and upload the zip file as an asset
     - name: Publish Release
