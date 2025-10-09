@@ -32,13 +32,23 @@ jobs:
     #  env:
     #    SLUG: a-test-plugin # optional, remove if GitHub repo name matches SVN slug, including capitalization
 
-    # Create the zip file using https://github.com/marketplace/actions/zip-release
+    # Create the zip file excluding files and directories listed in .distignore
     - name: 📦 Zip Release
-      uses: TheDoctor0/zip-release@0.7.6
-      with:
-        type: 'zip'
-        filename: 'a-test-plugin.zip' # Name of the archive file
-        exclusions: '*.git* *.github* /*node_modules* .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
+      run: |
+        echo "Reading exclusions from .distignore..."
+        EXCLUSIONS=""
+        while IFS= read -r line || [ -n "$line" ]; do
+            # Trim whitespace
+            line=$(echo "$line" | xargs)
+            # Skip empty lines and comments (lines starting with #)
+            if [[ -n "$line" && ! "$line" =~ ^# ]]; then
+                EXCLUSIONS="$EXCLUSIONS -x $line"
+            fi
+        done < "a-test-plugin/.distignore"
+
+        echo "Using exclusions from .distignore: $EXCLUSIONS"
+
+        zip -r "a-test-plugin.zip" . $EXCLUSIONS
     
     # Create release and upload the zip file as an asset using https://github.com/marketplace/actions/gh-release
     - name: 📣 Publish Release on GitHub
