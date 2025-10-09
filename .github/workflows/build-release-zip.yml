@@ -65,7 +65,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y sshpass
         echo "Testing connection to server..."
-        sshpass -p "${{ secrets.FTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${{ secrets.FTP_USERNAME }}@webdados7.ptalojamento.org "pwd && ls -la /var/www/nakedcatplugins.com/_plugin_files/ || echo 'Directory not accessible'"
+        sshpass -p "${{ secrets.FTP_PASSWORD }}" ssh -p ${{ vars.FTP_PORT }} -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${{ secrets.FTP_USERNAME }}@${{ vars.FTP_HOST }} "pwd && ls -la /var/www/nakedcatplugins.com/_plugin_files/ || echo 'Directory not accessible'"
 
 
     # Upload using basic SFTP command
@@ -74,7 +74,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y sshpass
         echo "Uploading file..."
-        sshpass -p "${{ secrets.FTP_PASSWORD }}" sftp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@webdados7.ptalojamento.org << EOF
+        sshpass -p "${{ secrets.FTP_PASSWORD }}" sftp -P ${{ vars.FTP_PORT }} -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ vars.FTP_HOST }} << EOF
         cd /var/www/nakedcatplugins.com/_plugin_files/
         put a-test-plugin.zip
         ls -la

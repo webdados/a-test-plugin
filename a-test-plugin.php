@@ -2,7 +2,7 @@
 /**
  * Plugin Name:          A Test Plugin
  * Description:          A test plugin for GitHub actions testing
- * Version:              0.0.6
+ * Version:              0.0.7
  * Author:               Naked Cat Plugins (by Webdados)
  * Author URI:           https://nakedcatplugins.com
  * Text Domain:          a-test-plugin
