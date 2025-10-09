@@ -53,11 +53,11 @@ jobs:
 
 
     # Debug: Check if file exists and list current directory
-    - name: 🔍 Debug - List files
-      run: |
-        pwd
-        ls -la
-        ls -la a-test-plugin.zip || echo "Zip file not found"
+    #- name: 🔍 Debug - List files
+    #  run: |
+    #    pwd
+    #    ls -la
+    #    ls -la a-test-plugin.zip || echo "Zip file not found"
 
     # Test connection first
     - name: 🔗 Test SFTP Connection
@@ -68,16 +68,15 @@ jobs:
         sshpass -p "${{ secrets.FTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${{ secrets.FTP_USERNAME }}@webdados7.ptalojamento.org "pwd && ls -la /var/www/nakedcatplugins.com/_plugin_files/ || echo 'Directory not accessible'"
 
 
-    # Upload the zip file to Naked Cat Plugins server
-    - name: 🆙 Upload to Naked Cat Plugins SFTP server
-      uses: appleboy/scp-action@v1
-      with:
-        debug: true
-        host: webdados7.ptalojamento.org
-        port: 22
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        source: "a-test-plugin.zip"
-        target: "/var/www/nakedcatplugins.com/_plugin_files/"
-        overwrite: true
-        strip_components: 0
+    # Upload using basic SFTP command
+    - name: 🆙 Upload via SFTP command
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y sshpass
+        echo "Uploading file..."
+        sshpass -p "${{ secrets.FTP_PASSWORD }}" sftp -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@webdados7.ptalojamento.org << EOF
+        cd /var/www/nakedcatplugins.com/_plugin_files/
+        put a-test-plugin.zip
+        ls -la
+        quit
+        EOF
