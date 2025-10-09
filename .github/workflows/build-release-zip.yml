@@ -44,7 +44,7 @@ jobs:
             if [[ -n "$line" && ! "$line" =~ ^# ]]; then
                 EXCLUSIONS="$EXCLUSIONS -x $line"
             fi
-        done < "a-test-plugin/.distignore"
+        done < ".distignore"
 
         echo "Using exclusions from .distignore: $EXCLUSIONS"
 
