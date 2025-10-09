@@ -12,12 +12,12 @@ permissions:
 
 jobs:
   build:
-    name: Build release zip
+    name: 🚀 Build Release ZIP file
     runs-on: ubuntu-latest
     steps:
     
     # Checkout the code from the repository
-    - name: Checkout
+    - name: 🚚 Checkout
       uses: actions/checkout@v4
 
     #- name: Build plugin # Remove or modify this step as needed
@@ -33,7 +33,7 @@ jobs:
     #    SLUG: a-test-plugin # optional, remove if GitHub repo name matches SVN slug, including capitalization
 
     # Create the zip file using https://github.com/marketplace/actions/zip-release
-    - name: Zip Release
+    - name: 🗜️ Zip Release
       uses: TheDoctor0/zip-release@0.7.6
       with:
         type: 'zip'
@@ -41,7 +41,7 @@ jobs:
         exclusions: '*.git* *.github* /*node_modules* .distignore .gitignore .phpcs.xml.dist README.md' # Would be great to get this automatically from .distignore
     
     # Create release and upload the zip file as an asset using https://github.com/marketplace/actions/gh-release
-    - name: Publish Release
+    - name: 📣 Publish Release on GitHub
       uses: softprops/action-gh-release@v2.3.3
       with:
         tag_name: ${{ github.ref_name }}
@@ -49,3 +49,14 @@ jobs:
         draft: false
         prerelease: false
         files: a-test-plugin.zip
+    
+    # Upload the zip file to Naked Cat Plugins server
+    - name: 🆙 Upload to Naked Cat Plugins SFTP server
+      uses: appleboy/scp-action@v1
+      with:
+        host: webdados7.ptalojamento.org
+        port: 22
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        source: "a-test-plugin.zip"
+        target: "/var/www/nakedcatplugins.com/_plugin_files/"
