@@ -42,13 +42,22 @@ jobs:
             line=$(echo "$line" | xargs)
             # Skip empty lines and comments (lines starting with #)
             if [[ -n "$line" && ! "$line" =~ ^# ]]; then
-                EXCLUSIONS="$EXCLUSIONS -x $line"
+                # Remove trailing /* if present and add both patterns
+                clean_line="${line%/*}"
+                if [[ "$line" == *"/*" ]]; then
+                    # Directory pattern - exclude both the directory and its contents
+                    EXCLUSIONS="$EXCLUSIONS -x \"$clean_line\" -x \"$clean_line/*\""
+                else
+                    # File pattern - exclude as-is
+                    EXCLUSIONS="$EXCLUSIONS -x \"$line\""
+                fi
             fi
         done < ".distignore"
 
-        echo "Using exclusions from .distignore: $EXCLUSIONS"
+        echo "Creating zip with exclusions from .distignore: $EXCLUSIONS"
 
-        zip -r "a-test-plugin.zip" . $EXCLUSIONS
+        # Use eval to properly handle the quoted exclusions
+        eval zip -r "shop-as-client-pro.zip" . $EXCLUSIONS
     
     # Create release and upload the zip file as an asset using https://github.com/marketplace/actions/gh-release
     - name: 📣 Publish Release on GitHub
@@ -79,7 +88,7 @@ jobs:
 
 
     # Upload using basic SFTP command - Working fine
-    #- name: 🆙 Upload via SFTP command
+    #- name: 🆙 Upload to server via SFTP command
     #  run: |
     #    sudo apt-get update
     #    sudo apt-get install -y sshpass
