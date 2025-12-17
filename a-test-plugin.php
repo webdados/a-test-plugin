@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:          A Test Plugin
+ * Plugin Name:          A Test Plugin - TEST PLAYGROUND BRANCH
  * Description:          A test plugin for GitHub actions testing
  * Version:              0.2
  * Author:               Naked Cat Plugins (by Webdados)
