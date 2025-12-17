@@ -2,7 +2,7 @@
 /**
  * Plugin Name:          A Test Plugin
  * Description:          A test plugin for GitHub actions testing
- * Version:              0.0.9
+ * Version:              0.1
  * Author:               Naked Cat Plugins (by Webdados)
  * Author URI:           https://nakedcatplugins.com
  * Text Domain:          a-test-plugin
@@ -11,7 +11,7 @@
  * Tested up to:         6.9
  * Requires PHP:         8.0
  * WC requires at least: 5.8
- * WC tested up to:      10.2
+ * WC tested up to:      10.4
  * Update URI:           false
  */
 
