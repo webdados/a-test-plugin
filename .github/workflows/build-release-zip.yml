@@ -1,4 +1,4 @@
-name: Build release zip
+name: Build release zip when pushing tag
 
 on:
   push:
@@ -20,18 +20,6 @@ jobs:
     - name: 🚚 Checkout
       uses: actions/checkout@v4
 
-    #- name: Build plugin # Remove or modify this step as needed
-    #  run: |
-    #    composer install --no-dev
-    #    npm install
-    #    npm run build
-
-    # This only works for WordPress.org hosted plugins
-    #- name: Generate zip
-    #  uses: 10up/action-wordpress-plugin-build-zip@stable
-    #  env:
-    #    SLUG: a-test-plugin # optional, remove if GitHub repo name matches SVN slug, including capitalization
-
     # Create the zip file excluding files and directories listed in .distignore
     - name: 📦 Zip Release
       run: |
@@ -42,22 +30,19 @@ jobs:
             line=$(echo "$line" | xargs)
             # Skip empty lines and comments (lines starting with #)
             if [[ -n "$line" && ! "$line" =~ ^# ]]; then
-                # Remove trailing /* if present and add both patterns
-                clean_line="${line%/*}"
-                if [[ "$line" == *"/*" ]]; then
-                    # Directory pattern - exclude both the directory and its contents
-                    EXCLUSIONS="$EXCLUSIONS -x \"$clean_line\" -x \"$clean_line/*\""
-                else
-                    # File pattern - exclude as-is
-                    EXCLUSIONS="$EXCLUSIONS -x \"$line\""
-                fi
+                # Handle both patterns with and without wildcards
+                EXCLUSIONS="$EXCLUSIONS -x \"$line\""
             fi
         done < ".distignore"
 
-        echo "Creating zip with exclusions from .distignore: $EXCLUSIONS"
+        echo "Creating zip with exclusions from .distignore"
+        echo "Exclusions: $EXCLUSIONS"
 
         # Use eval to properly handle the quoted exclusions
-        eval zip -r "shop-as-client-pro.zip" . $EXCLUSIONS
+        eval zip -r "a-test-plugin.zip" . $EXCLUSIONS
+        
+        echo "Zip file created. Contents:"
+        unzip -l "a-test-plugin.zip" | head -20
     
     # Create release and upload the zip file as an asset using https://github.com/marketplace/actions/gh-release
     - name: 📣 Publish Release on GitHub
@@ -68,34 +53,3 @@ jobs:
         draft: false
         prerelease: false
         files: a-test-plugin.zip
-
-
-
-    # Debug: Check if file exists and list current directory
-    #- name: 🔍 Debug - List files
-    #  run: |
-    #    pwd
-    #    ls -la
-    #    ls -la a-test-plugin.zip || echo "Zip file not found"
-
-    # Test SFTP connection first - Working fine
-    #- name: 🔗 Test SFTP Connection
-    #  run: |
-    #    sudo apt-get update
-    #    sudo apt-get install -y sshpass
-    #    echo "Testing connection to server..."
-    #    sshpass -p "${{ secrets.FTP_PASSWORD }}" ssh -p ${{ vars.FTP_PORT }} -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${{ secrets.FTP_USERNAME }}@${{ vars.FTP_HOST }} "pwd && ls -la /var/www/nakedcatplugins.com/_plugin_files/ || echo 'Directory not accessible'"
-
-
-    # Upload using basic SFTP command - Working fine
-    #- name: 🆙 Upload to server via SFTP command
-    #  run: |
-    #    sudo apt-get update
-    #    sudo apt-get install -y sshpass
-    #    echo "Uploading file..."
-    #    sshpass -p "${{ secrets.FTP_PASSWORD }}" sftp -P ${{ vars.FTP_PORT }} -o StrictHostKeyChecking=no ${{ secrets.FTP_USERNAME }}@${{ vars.FTP_HOST }} << EOF
-    #    cd /var/www/nakedcatplugins.com/_plugin_files/
-    #    put a-test-plugin.zip
-    #    ls -la
-    #    quit
-    #    EOF
